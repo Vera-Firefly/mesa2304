@@ -47,6 +47,7 @@
 
 #include "freedreno_fence.h"
 #include "freedreno_perfetto.h"
+#include "freedreno_public.h"
 #include "freedreno_query.h"
 #include "freedreno_resource.h"
 #include "freedreno_screen.h"

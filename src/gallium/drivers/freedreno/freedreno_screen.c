@@ -572,6 +572,11 @@ fd_screen_get_param(struct pipe_screen *pscreen, enum pipe_cap param)
       return is_a6xx(screen);
    case PIPE_CAP_TWO_SIDED_COLOR:
       return 0;
+   case PIPE_CAP_DMABUF:
+      if (fd_get_features(screen->dev) & FD_FEATURE_IMPORT_DMABUF)
+         return DRM_PRIME_CAP_IMPORT;
+      /* Fallthough to default case */
+      FALLTHROUGH;
    default:
       return u_pipe_screen_get_param_defaults(pscreen, param);
    }

@@ -146,6 +146,7 @@ msm_bo_destroy(struct fd_bo *bo)
 
 static const struct fd_bo_funcs funcs = {
    .offset = msm_bo_offset,
+   .map = fd_bo_map_os_mmap,
    .cpu_prep = msm_bo_cpu_prep,
    .madvise = msm_bo_madvise,
    .iova = msm_bo_iova,

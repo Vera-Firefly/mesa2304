@@ -561,3 +561,11 @@ option(
   value : 'auto',
   description : 'Build custom xmlconfig (driconf) support. If disabled, the default driconf file is hardcoded into Mesa. Requires expat.'
 )
+option(
+  'freedreno-kmds',
+  type : 'array',
+  value : ['msm'],
+  choices : ['msm', 'kgsl', 'virtio'],
+  description : 'List of kernel-mode drivers to enable for freedreno ' +
+                'gallium and vulkan driver',
+)

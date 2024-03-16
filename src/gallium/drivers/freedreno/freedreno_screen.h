@@ -198,7 +198,7 @@ bool fd_screen_bo_get_handle(struct pipe_screen *pscreen, struct fd_bo *bo,
 struct fd_bo *fd_screen_bo_from_handle(struct pipe_screen *pscreen,
                                        struct winsys_handle *whandle);
 
-struct pipe_screen *fd_screen_create(const struct *fd,
+struct pipe_screen *fd_screen_create(int fd,
                                      const struct pipe_screen_config *config,
                                      struct renderonly *ro);
 

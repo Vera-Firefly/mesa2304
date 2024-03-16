@@ -32,7 +32,7 @@ struct pipe_screen;
 struct pipe_screen_config;
 struct renderonly;
 
-struct pipe_screen *fd_screen_create(struct fd_device *dev, struct renderonly *ro, const struct pipe_screen_config *config);
+struct pipe_screen *fd_screen_create(int fd, const struct pipe_screen_config *config, struct renderonly *ro);
 
 #ifdef __cplusplus
 }

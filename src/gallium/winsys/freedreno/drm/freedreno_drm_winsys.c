@@ -69,9 +69,8 @@ fd_drm_screen_destroy(struct pipe_screen *pscreen)
 }
 
 struct pipe_screen *
-fd_drm_screen_create(int fd,
-		const struct pipe_screen_config *config,
-		struct renderonly *ro)
+fd_drm_screen_create(int fd, struct renderonly *ro,
+   const struct pipe_screen_config *config)
 {
 	struct pipe_screen *pscreen = NULL;
 

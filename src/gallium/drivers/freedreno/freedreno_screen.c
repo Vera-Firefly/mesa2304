@@ -1010,7 +1010,7 @@ fd_screen_create(int fd,
 
    pscreen = &screen->base;
 
-   screen->dev = dev;
+   screen->dev = div;
    screen->ro = ro;
    screen->refcnt = 1;
 
@@ -1027,7 +1027,7 @@ fd_screen_create(int fd,
    }
    screen->gmemsize_bytes = debug_get_num_option("FD_MESA_GMEM", val);
 
-   if (fd_device_version(dev) >= FD_VERSION_GMEM_BASE) {
+   if (fd_device_version(div) >= FD_VERSION_GMEM_BASE) {
       fd_pipe_get_param(screen->pipe, FD_GMEM_BASE, &screen->gmem_base);
    }
 
@@ -1087,7 +1087,7 @@ fd_screen_create(int fd,
       screen->prio_norm = val / 2;
    }
 
-   if (fd_device_version(dev) >= FD_VERSION_ROBUSTNESS)
+   if (fd_device_version(div) >= FD_VERSION_ROBUSTNESS)
       screen->has_robustness = true;
 
    screen->has_syncobj = fd_has_syncobj(screen->dev);
@@ -1147,7 +1147,7 @@ fd_screen_create(int fd,
     * growable cmdstream buffers, since memory requirement for cmdstream
     * buffers would be too much otherwise.
     */
-   if (fd_device_version(dev) >= FD_VERSION_UNLIMITED_CMDS)
+   if (fd_device_version(div) >= FD_VERSION_UNLIMITED_CMDS)
       screen->reorder = !FD_DBG(INORDER);
 
    fd_bc_init(&screen->batch_cache);

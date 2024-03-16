@@ -1092,18 +1092,9 @@ fd_screen_create(int fd,
 
    screen->has_syncobj = fd_has_syncobj(screen->dev);
 
-   /* parse driconf configuration now for device specific overrides: */
-   driParseConfigFiles(config->options, config->options_info, 0, "msm",
-                       NULL, fd_dev_name(screen->dev_id), NULL, 0, NULL, 0);
-
    struct sysinfo si;
    sysinfo(&si);
    screen->ram_size = si.totalram;
-
-   DBG("Pipe Info:");
-   DBG(" GPU-id:          %s", fd_dev_name(screen->dev_id));
-   DBG(" Chip-id:         0x%016"PRIx64, screen->chip_id);
-   DBG(" GMEM size:       0x%08x", screen->gmemsize_bytes);
 
    const struct fd_dev_info *info = fd_dev_info(screen->dev_id);
    if (!info) {
@@ -1151,11 +1142,6 @@ fd_screen_create(int fd,
    for (unsigned i = 0; i <= PIPE_PRIM_MAX; i++)
       if (screen->primtypes[i])
          screen->primtypes_mask |= (1 << i);
-
-   if (FD_DBG(PERFC)) {
-      screen->perfcntr_groups =
-         fd_perfcntrs(screen->dev_id, &screen->num_perfcntr_groups);
-   }
 
    /* NOTE: don't enable if we have too old of a kernel to support
     * growable cmdstream buffers, since memory requirement for cmdstream

@@ -198,9 +198,9 @@ bool fd_screen_bo_get_handle(struct pipe_screen *pscreen, struct fd_bo *bo,
 struct fd_bo *fd_screen_bo_from_handle(struct pipe_screen *pscreen,
                                        struct winsys_handle *whandle);
 
-struct pipe_screen *fd_screen_create(struct fd_device *dev,
-                                     struct renderonly *ro,
-                                     const struct pipe_screen_config *config);
+struct pipe_screen *fd_screen_create(int fd,
+                                     const struct pipe_screen_config *config,
+                                     struct renderonly *ro);
 
 static inline boolean
 is_a20x(struct fd_screen *screen)

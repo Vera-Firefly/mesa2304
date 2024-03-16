@@ -53,7 +53,7 @@ fd_drm_screen_destroy(struct pipe_screen *pscreen)
 	destroy = --screen->refcnt == 0;
 	if (destroy) {
 		int fd = fd_device_fd(screen->dev);
-		_mesa_hash_table_remove_key(fd_tab, intptr_to_pointer(dev));
+		_mesa_hash_table_remove_key(fd_tab, intptr_to_pointer(fd));
 
 		if (!fd_tab->entries) {
 			_mesa_hash_table_destroy(fd_tab, NULL);
@@ -69,9 +69,9 @@ fd_drm_screen_destroy(struct pipe_screen *pscreen)
 }
 
 struct pipe_screen *
-fd_drm_screen_create(int dev,
-   const struct pipe_screen_config *config,
-   struct renderonly *ro)
+fd_drm_screen_create(int fd,
+		const struct pipe_screen_config *config,
+		struct renderonly *ro)
 {
 	struct pipe_screen *pscreen = NULL;
 
@@ -82,19 +82,19 @@ fd_drm_screen_create(int dev,
 			goto unlock;
 	}
 
-	pscreen = util_hash_table_get(fd_tab, intptr_to_pointer(dev));
+	pscreen = util_hash_table_get(fd_tab, intptr_to_pointer(fd));
 	if (pscreen) {
 		fd_screen(pscreen)->refcnt++;
 	} else {
-		struct fd_device *dev = fd_device_new_dup(dev);
+		struct fd_device *dev = fd_device_new_dup(fd);
 		if (!dev)
 			goto unlock;
 
-		pscreen = fd_screen_create(dev, config, ro);
+		pscreen = fd_screen_create(fd, config, ro);
 		if (pscreen) {
 			int fd = fd_device_fd(dev);
 
-			_mesa_hash_table_insert(fd_tab, intptr_to_pointer(dev), pscreen);
+			_mesa_hash_table_insert(fd_tab, intptr_to_pointer(fd), pscreen);
 
 			/* Bit of a hack, to avoid circular linkage dependency,
 			 * ie. pipe driver having to call in to winsys, we

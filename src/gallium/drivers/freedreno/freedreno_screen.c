@@ -988,7 +988,7 @@ fd_screen_get_driver_uuid(struct pipe_screen *pscreen, char *uuid)
 }
 
 struct pipe_screen *
-fd_screen_create(int fd,
+fd_screen_create(int dev,
    const struct pipe_screen_config *config,
    struct renderonly *ro)
 {

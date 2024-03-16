@@ -89,7 +89,7 @@ fd_drm_screen_create(int fd, struct renderonly *ro,
 		if (!dev)
 			goto unlock;
 
-		pscreen = fd_screen_create(dev, ro, config);
+		pscreen = fd_screen_create(fd, config, ro);
 		if (pscreen) {
 			int fd = fd_device_fd(dev);
 

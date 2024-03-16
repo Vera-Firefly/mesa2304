@@ -53,7 +53,7 @@ fd_drm_screen_destroy(struct pipe_screen *pscreen)
 	destroy = --screen->refcnt == 0;
 	if (destroy) {
 		int fd = fd_device_fd(screen->dev);
-		_mesa_hash_table_remove_key(fd_tab, intptr_to_pointer(fd));
+		_mesa_hash_table_remove_key(fd_tab, intptr_to_pointer(dev));
 
 		if (!fd_tab->entries) {
 			_mesa_hash_table_destroy(fd_tab, NULL);
@@ -69,8 +69,9 @@ fd_drm_screen_destroy(struct pipe_screen *pscreen)
 }
 
 struct pipe_screen *
-fd_drm_screen_create(int dev, struct renderonly *ro,
-		const struct pipe_screen_config *config)
+fd_drm_screen_create(int dev,
+   const struct pipe_screen_config *config,
+   struct renderonly *ro)
 {
 	struct pipe_screen *pscreen = NULL;
 
@@ -89,7 +90,7 @@ fd_drm_screen_create(int dev, struct renderonly *ro,
 		if (!dev)
 			goto unlock;
 
-		pscreen = fd_screen_create(dev, ro, config);
+		pscreen = fd_screen_create(dev, config, ro);
 		if (pscreen) {
 			int fd = fd_device_fd(dev);
 

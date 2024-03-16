@@ -990,7 +990,7 @@ fd_screen_get_driver_uuid(struct pipe_screen *pscreen, char *uuid)
 struct pipe_screen *
 fd_screen_create(int fd,
    const struct pipe_screen_config *config,
-   struct renderonly *ro);
+   struct renderonly *ro)
 {
    struct fd_screen *screen = CALLOC_STRUCT(fd_screen);
    struct pipe_screen *pscreen;

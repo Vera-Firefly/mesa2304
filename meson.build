@@ -239,6 +239,10 @@ foreach gallium_driver : gallium_drivers
   pre_args += '-DHAVE_@0@'.format(gallium_driver.to_upper())
 endforeach
 
+if get_option('freedreno-kmds').contains('kgsl')
+  pre_args += '-DHAVE_FREEDRENO_KGSL'
+endif
+
 with_gallium = gallium_drivers.length() != 0
 with_gallium_kmsro = system_has_kms_drm and [
   with_gallium_asahi,

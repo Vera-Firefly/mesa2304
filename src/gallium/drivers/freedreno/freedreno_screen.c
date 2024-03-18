@@ -47,6 +47,7 @@
 
 #include "freedreno_fence.h"
 #include "freedreno_perfetto.h"
+#include "freedreno_public.h"
 #include "freedreno_query.h"
 #include "freedreno_resource.h"
 #include "freedreno_screen.h"
@@ -571,6 +572,11 @@ fd_screen_get_param(struct pipe_screen *pscreen, enum pipe_cap param)
       return is_a6xx(screen);
    case PIPE_CAP_TWO_SIDED_COLOR:
       return 0;
+   case PIPE_CAP_DMABUF:
+      if (fd_get_features(screen->dev) & FD_FEATURE_IMPORT_DMABUF)
+         return DRM_PRIME_CAP_IMPORT;
+      /* Fallthough to default case */
+      FALLTHROUGH;
    default:
       return u_pipe_screen_get_param_defaults(pscreen, param);
    }
@@ -982,9 +988,14 @@ fd_screen_get_driver_uuid(struct pipe_screen *pscreen, char *uuid)
 }
 
 struct pipe_screen *
-fd_screen_create(struct fd_device *dev, struct renderonly *ro,
-                 const struct pipe_screen_config *config)
+fd_screen_create(int fd,
+   const struct pipe_screen_config *config,
+   struct renderonly *ro)
 {
+   struct fd_device *dev = fd_device_new(fd);
+   if (!dev)
+      return NULL;
+
    struct fd_screen *screen = CALLOC_STRUCT(fd_screen);
    struct pipe_screen *pscreen;
    uint64_t val;
@@ -1085,18 +1096,9 @@ fd_screen_create(struct fd_device *dev, struct renderonly *ro,
 
    screen->has_syncobj = fd_has_syncobj(screen->dev);
 
-   /* parse driconf configuration now for device specific overrides: */
-   driParseConfigFiles(config->options, config->options_info, 0, "msm",
-                       NULL, fd_dev_name(screen->dev_id), NULL, 0, NULL, 0);
-
    struct sysinfo si;
    sysinfo(&si);
    screen->ram_size = si.totalram;
-
-   DBG("Pipe Info:");
-   DBG(" GPU-id:          %s", fd_dev_name(screen->dev_id));
-   DBG(" Chip-id:         0x%016"PRIx64, screen->chip_id);
-   DBG(" GMEM size:       0x%08x", screen->gmemsize_bytes);
 
    const struct fd_dev_info *info = fd_dev_info(screen->dev_id);
    if (!info) {
@@ -1144,11 +1146,6 @@ fd_screen_create(struct fd_device *dev, struct renderonly *ro,
    for (unsigned i = 0; i <= PIPE_PRIM_MAX; i++)
       if (screen->primtypes[i])
          screen->primtypes_mask |= (1 << i);
-
-   if (FD_DBG(PERFC)) {
-      screen->perfcntr_groups =
-         fd_perfcntrs(screen->dev_id, &screen->num_perfcntr_groups);
-   }
 
    /* NOTE: don't enable if we have too old of a kernel to support
     * growable cmdstream buffers, since memory requirement for cmdstream

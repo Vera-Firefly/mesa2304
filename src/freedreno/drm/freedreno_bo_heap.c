@@ -200,6 +200,7 @@ static struct fd_bo_funcs heap_bo_funcs = {
       .cpu_prep = sa_cpu_prep,
       .madvise = sa_madvise,
       .iova = sa_iova,
+      .map = fd_bo_map_os_mmap,
       .set_name = sa_set_name,
       .destroy = sa_destroy,
 };

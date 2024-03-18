@@ -992,6 +992,10 @@ fd_screen_create(int fd,
    const struct pipe_screen_config *config,
    struct renderonly *ro)
 {
+   struct fd_device *dev = fd_device_new(fd);
+   if (!dev)
+      return NULL;
+
    struct fd_screen *screen = CALLOC_STRUCT(fd_screen);
    struct pipe_screen *pscreen;
    uint64_t val;
